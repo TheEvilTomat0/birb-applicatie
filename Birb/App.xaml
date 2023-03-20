@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:Birb"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary Source="/Themes/NavButton.xaml"/>
     </Application.Resources>
 </Application>
