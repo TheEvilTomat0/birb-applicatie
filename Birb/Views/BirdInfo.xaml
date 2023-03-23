@@ -9,11 +9,42 @@
       Title="BirdInfo" Background="White">
 
     <Grid>
-        <TextBlock Text="BIRD INFO" 
-                   FontFamily="Ubunut"
-                   FontSize="30"
-                   FontWeight="Black"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Margin="20">
+            <TextBox Margin="0,0,0,20"
+                     Text="{Binding Path=BirdName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <ListBox Height="200"
+                     ItemsSource="{Binding Birds, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     DisplayMemberPath="Name"
+                     SelectedValuePath="Name"
+                     SelectionChanged="ListBox_SelectionChanged"/>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1"
+                    Margin="20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Margin="10">
+                    <Image Source="{Binding Bird.Img, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           Stretch="Uniform"
+                           HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding Bird.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               FontSize="28"
+                               FontFamily="Ubuntu"
+                               FontWeight="Black"
+                               Foreground="#00676E"
+                               Margin="0,10,0,0"/>
+                </StackPanel>
+            </Grid>
+            
+        </StackPanel>
     </Grid>
 </Page>
