@@ -33,10 +33,10 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Margin="10">
-                    <Image Source="{Binding Bird.Img, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    <Image Source="{Binding SingleBird.Img, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                            Stretch="Uniform"
                            HorizontalAlignment="Center"/>
-                    <TextBlock Text="{Binding Bird.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBlock Text="{Binding SingleBird.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                FontSize="28"
                                FontFamily="Ubuntu"
                                FontWeight="Black"

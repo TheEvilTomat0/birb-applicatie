@@ -1,5 +1,4 @@
-﻿using Birb.Class;
-using Birb.Views;
+﻿using Birb.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;

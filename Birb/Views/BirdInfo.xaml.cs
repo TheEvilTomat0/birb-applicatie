@@ -1,4 +1,5 @@
-﻿using Birb.Class;
+﻿using Domain;
+using Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -23,6 +24,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using DTO;
 
 namespace Birb.Views
 {
@@ -31,30 +33,32 @@ namespace Birb.Views
     /// </summary>
     public partial class BirdInfo : Page, INotifyPropertyChanged
     {
+        public string SelectedBird { get; set; }
+
         private string birdName;
 
         public string BirdName
         {
             get { return birdName; }
-            set { birdName = value; OnPropertyChanged("BirdName"); getBirdList(); }
+            set { birdName = value; OnPropertyChanged("BirdName"); FillBirdList(); }
         }
 
-        public string SelectedBird { get; set; }
+        public BirdDomain BirdDomain { get; set; }
 
-        private ObservableCollection<Bird> birds;
+        private ObservableCollection<BirdDTO> birds;
 
-        public ObservableCollection<Bird> Birds
+        public ObservableCollection<BirdDTO> Birds
         {
             get { return birds; }
-            set { birds = value; OnPropertyChanged("Birds"); }
+            set { birds = value; OnPropertyChanged(); }
         }
 
-        private Bird bird;
+        private BirdDTO singleBird;
 
-        public Bird Bird
+        public BirdDTO SingleBird
         {
-            get { return bird; }
-            set { bird = value; OnPropertyChanged("Bird"); }
+            get { return singleBird; }
+            set { singleBird = value; OnPropertyChanged(); }
         }
 
 
@@ -62,30 +66,19 @@ namespace Birb.Views
         {
             InitializeComponent();
             DataContext = this;
+            BirdDomain = new BirdDomain();
         }
 
-        private void getBirdList()
+        public void FillBirdList()
         {
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri("https://bird-api.codeonmedia.nl/birds/?search=" + BirdName);
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            HttpResponseMessage response = client.GetAsync(client.BaseAddress).Result;
-
-            if (response.IsSuccessStatusCode)
-            {
-                Birds = response.Content.ReadAsAsync<ObservableCollection<Bird>>().Result;
-            }
-            else
-            {
-                MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
-            }
+            Birds = BirdDomain.GetBirdList(BirdName);            
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }        
+        }
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -94,43 +87,8 @@ namespace Birb.Views
 
             if (SelectedBird != null)
             {
-                getBirdData();
+                SingleBird = BirdDomain.GetBirdData(SelectedBird);
             }
         }
-
-        private void getBirdData()
-        {
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri("https://bird-api.codeonmedia.nl/bird/?bird=" + SelectedBird);
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            HttpResponseMessage response = client.GetAsync(client.BaseAddress).Result;
-
-            if (response.IsSuccessStatusCode)
-            {
-                //object bird = response.Content.ReadAsAsync<ObservableCollection<Bird>>().Result;
-                var json = response.Content.ReadAsStringAsync().Result;
-                var obj = JsonConvert.DeserializeObject<IList<Bird>>(json);
-                Bird = obj[0];
-                Bird.Img.Replace("&", "&amp;");
-            }
-            else
-            {
-                MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
-            }
-
-            #region TestCode
-            //using (var client = new HttpClient())
-            //{
-            //    var endpoint = "https://bird-api.codeonmedia.nl/bird/?bird=" + SelectedBird;
-            //    var result = client.GetAsync(endpoint).Result;
-            //    //var json = JsonConvert.SerializeObject(result);
-            //    var json = result.Content.ReadAsStringAsync().Result;
-            //    var obj = JsonConvert.DeserializeObject<IList<Bird>>(json);
-            //    Bird = obj[0];
-            //}
-            #endregion
-        }
-
-
     }
 }
